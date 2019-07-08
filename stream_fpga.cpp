@@ -338,10 +338,10 @@ int main(int argc, char * argv[])
    
 	//set arguments of triad kernel
        //b[i]
-	err = triadkernel.setArg(0, Buffer_B);
+	err = triadkernel.setArg(0, Buffer_A);
 	assert(err==CL_SUCCESS);
        //c[i]
-	err = triadkernel.setArg(1, Buffer_B);
+	err = triadkernel.setArg(1, Buffer_A);
 	assert(err==CL_SUCCESS);
        //a[i]
 	err = triadkernel.setArg(2, Buffer_A);
