@@ -353,14 +353,16 @@ int main(int argc, char * argv[])
 	assert(err==CL_SUCCESS);
 	err = testkernel.setArg(3, STREAM_ARRAY_SIZE);
 	assert(err==CL_SUCCESS);
-    //set arguments of copy kernel
+   
+       //set arguments of copy kernel
 	err = copykernel.setArg(0, Buffer_A);
 	assert(err==CL_SUCCESS);
 	err = copykernel.setArg(1, Buffer_C);
 	assert(err==CL_SUCCESS);
 	err = copykernel.setArg(2, STREAM_ARRAY_SIZE);
 	assert(err==CL_SUCCESS);
-	//set arguments of scalar kernel
+	
+       //set arguments of scalar kernel
 	err = scalarkernel.setArg(0, Buffer_C);
 	assert(err==CL_SUCCESS);
 	err = scalarkernel.setArg(1, Buffer_B);
@@ -369,7 +371,8 @@ int main(int argc, char * argv[])
 	assert(err==CL_SUCCESS);
 	err = scalarkernel.setArg(3, STREAM_ARRAY_SIZE);
 	assert(err==CL_SUCCESS);
-	//set arguments of add kernel
+	
+       //set arguments of add kernel
 	err = addkernel.setArg(0, Buffer_A);
 	assert(err==CL_SUCCESS);
 	err = addkernel.setArg(1, Buffer_B);
@@ -378,11 +381,15 @@ int main(int argc, char * argv[])
 	assert(err==CL_SUCCESS);
 	err = addkernel.setArg(3, STREAM_ARRAY_SIZE);
 	assert(err==CL_SUCCESS);
+
 	//set arguments of triad kernel
+       //b[i]
 	err = triadkernel.setArg(0, Buffer_B);
 	assert(err==CL_SUCCESS);
-	err = triadkernel.setArg(1, Buffer_C);
+       //c[i]
+	err = triadkernel.setArg(1, Buffer_B);
 	assert(err==CL_SUCCESS);
+       //a[i]
 	err = triadkernel.setArg(2, Buffer_A);
 	assert(err==CL_SUCCESS);
 	err = triadkernel.setArg(3, scalar);
@@ -430,17 +437,17 @@ int main(int argc, char * argv[])
 
 	for (int k=0; k < NTIMES; k++) {
         std::cout << "Execute iteration " << (k + 1) << " of " << NTIMES << std::endl;
-	    //Write data to device
-	    times[4][k] = mysecond();
+	 //Write data to device
+	 times[4][k] = mysecond();
         streamqueue.enqueueWriteBuffer(Buffer_A, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, A);
-	    streamqueue.enqueueWriteBuffer(Buffer_B, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, B);	
-	    streamqueue.enqueueWriteBuffer(Buffer_C, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, C);
-	    err = streamqueue.finish();
+	 streamqueue.enqueueWriteBuffer(Buffer_B, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, B);	
+	 streamqueue.enqueueWriteBuffer(Buffer_C, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, C);
+	 err = streamqueue.finish();
         times[4][k] = mysecond() - times[4][k];
 
         assert(err==CL_SUCCESS);
 
-		times[0][k] = mysecond();
+/*		times[0][k] = mysecond();
 		streamqueue.enqueueTask(copykernel, NULL, &e);
 		err=e.wait();
 		times[0][k] = mysecond() - times[0][k];
@@ -457,7 +464,7 @@ int main(int argc, char * argv[])
 		streamqueue.enqueueTask(addkernel, NULL, &e);
 		err=e.wait();
 		times[2][k] = mysecond() - times[2][k];
-		assert(err==CL_SUCCESS);
+		assert(err==CL_SUCCESS);*/
 		
 		times[3][k] = mysecond();
 		streamqueue.enqueueTask(triadkernel, NULL, &e);
@@ -467,10 +474,10 @@ int main(int argc, char * argv[])
         
         // read the output
         times[5][k] = mysecond();
-	    streamqueue.enqueueReadBuffer(Buffer_A, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, A);
-	    streamqueue.enqueueReadBuffer(Buffer_B, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, B);
-	    streamqueue.enqueueReadBuffer(Buffer_C, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, C);
-	    err=streamqueue.finish();
+        streamqueue.enqueueReadBuffer(Buffer_A, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, A);
+        streamqueue.enqueueReadBuffer(Buffer_B, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, B);
+        streamqueue.enqueueReadBuffer(Buffer_C, CL_FALSE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, C);
+        err=streamqueue.finish();
         times[5][k] = mysecond() - times[5][k];
         assert(err==CL_SUCCESS);
 
@@ -489,7 +496,7 @@ int main(int argc, char * argv[])
 	}
     
     printf("Function    Best Rate MB/s  Avg time     Min time     Max time\n");
-    for (j=0; j<6; j++) {
+    for (j=4; j<4; j++) {
 		avgtime[j] = avgtime[j]/(double)(NTIMES-1);
 
 		printf("%s%12.1f  %11.6f  %11.6f  %11.6f\n", label[j].c_str(),
@@ -501,7 +508,7 @@ int main(int argc, char * argv[])
     printf(HLINE);
 
     /* --- Check Results --- */
-    checkSTREAMresults();
+//    checkSTREAMresults();
     printf(HLINE);
     return 0;
 }
