@@ -331,57 +331,11 @@ int main(int argc, char * argv[])
 	cl::Program program(streamcontext, DeviceList, mybinaries);
 
 	// create the kernels
-    cl::Kernel testkernel(program, STREAM_SCALAR_KERNEL, &err);
-    assert(err==CL_SUCCESS);
-    cl::Kernel copykernel(program, STREAM_COPY_KERNEL, &err);
-	assert(err==CL_SUCCESS);
-	cl::Kernel scalarkernel(program, STREAM_SCALAR_KERNEL, &err);
-	assert(err==CL_SUCCESS);
-	cl::Kernel addkernel(program, STREAM_ADD_KERNEL, &err);
-	assert(err==CL_SUCCESS);
 	cl::Kernel triadkernel(program, STREAM_TRIAD_KERNEL, &err);
 	assert(err==CL_SUCCESS);
 
 	scalar = 3.0;
-    test_scalar = 2.0E0;
-	//prepare kernels
-	err = testkernel.setArg(0, Buffer_A);
-	assert(err==CL_SUCCESS);
-	err = testkernel.setArg(1, Buffer_A);
-	assert(err==CL_SUCCESS);
-    err = testkernel.setArg(2, test_scalar);
-	assert(err==CL_SUCCESS);
-	err = testkernel.setArg(3, STREAM_ARRAY_SIZE);
-	assert(err==CL_SUCCESS);
    
-       //set arguments of copy kernel
-	err = copykernel.setArg(0, Buffer_A);
-	assert(err==CL_SUCCESS);
-	err = copykernel.setArg(1, Buffer_C);
-	assert(err==CL_SUCCESS);
-	err = copykernel.setArg(2, STREAM_ARRAY_SIZE);
-	assert(err==CL_SUCCESS);
-	
-       //set arguments of scalar kernel
-	err = scalarkernel.setArg(0, Buffer_C);
-	assert(err==CL_SUCCESS);
-	err = scalarkernel.setArg(1, Buffer_B);
-	assert(err==CL_SUCCESS);
-	err = scalarkernel.setArg(2, scalar);
-	assert(err==CL_SUCCESS);
-	err = scalarkernel.setArg(3, STREAM_ARRAY_SIZE);
-	assert(err==CL_SUCCESS);
-	
-       //set arguments of add kernel
-	err = addkernel.setArg(0, Buffer_A);
-	assert(err==CL_SUCCESS);
-	err = addkernel.setArg(1, Buffer_B);
-	assert(err==CL_SUCCESS);
-	err = addkernel.setArg(2, Buffer_C);
-	assert(err==CL_SUCCESS);
-	err = addkernel.setArg(3, STREAM_ARRAY_SIZE);
-	assert(err==CL_SUCCESS);
-
 	//set arguments of triad kernel
        //b[i]
 	err = triadkernel.setArg(0, Buffer_B);
@@ -413,6 +367,7 @@ int main(int argc, char * argv[])
     streamqueue.finish();
     
     cl::Event e;
+/*
     t = mysecond();
 	streamqueue.enqueueTask(testkernel, NULL, &e);
 	err=e.wait();	
@@ -420,7 +375,7 @@ int main(int argc, char * argv[])
 
 	streamqueue.enqueueReadBuffer(Buffer_A, CL_TRUE, 0, sizeof(STREAM_TYPE)*STREAM_ARRAY_SIZE, A);
     err=streamqueue.finish();
-    
+   */ 
 
     printf("Each test below will take on the order"
 	" of %d microseconds.\n", (int) t  );
@@ -496,7 +451,7 @@ int main(int argc, char * argv[])
 	}
     
     printf("Function    Best Rate MB/s  Avg time     Min time     Max time\n");
-    for (j=4; j<4; j++) {
+    for (j=3; j<=3; j++) {
 		avgtime[j] = avgtime[j]/(double)(NTIMES-1);
 
 		printf("%s%12.1f  %11.6f  %11.6f  %11.6f\n", label[j].c_str(),
