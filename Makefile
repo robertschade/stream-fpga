@@ -35,7 +35,7 @@ KERNEL_SRCS := stream_kernels.cl
 KERNEL_INPUTS = $(KERNEL_SRCS:.cl=.aocx)
 
 STREAM_ARRAY_SIZE := 50000000
-BOARD := p520_hpc_sg280l
+BOARD := p520_max_sg280l
 STREAM_TYPE := double
 UNROLL_COUNT := 8
 OFFSET := 0
